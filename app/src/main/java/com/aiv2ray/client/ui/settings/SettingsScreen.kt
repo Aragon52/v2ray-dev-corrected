@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aiv2ray.client.ui.theme.Copper
 import com.aiv2ray.client.ui.theme.Iron
+import com.aiv2ray.client.ui.theme.ScrewedSteelPlate
 import com.aiv2ray.client.ui.theme.Steel
-import com.aiv2ray.client.ui.theme.SteelTray
 
 @Composable
 fun SettingsPane() {
@@ -33,7 +33,7 @@ fun SettingsPane() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        SteelTray(modifier = Modifier.fillMaxWidth()) {
+        ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SectionTitle("DEVICE")
                 RowKV("KILL SWITCH", "ENABLED")
@@ -43,7 +43,7 @@ fun SettingsPane() {
             }
         }
 
-        SteelTray(modifier = Modifier.fillMaxWidth()) {
+        ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SectionTitle("APPEARANCE")
                 RowKV("THEME", "BRUSHED STEEL")
@@ -52,7 +52,7 @@ fun SettingsPane() {
             }
         }
 
-        SteelTray(modifier = Modifier.fillMaxWidth()) {
+        ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SectionTitle("PRIVACY")
                 RowKV("ANALYTICS", "NONE")

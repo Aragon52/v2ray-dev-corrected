@@ -20,10 +20,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +44,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -51,8 +54,8 @@ import com.aiv2ray.client.data.ServerProfile
 import com.aiv2ray.client.ui.theme.Copper
 import com.aiv2ray.client.ui.theme.Iron
 import com.aiv2ray.client.ui.theme.KeyCapButton
+import com.aiv2ray.client.ui.theme.ScrewedSteelPlate
 import com.aiv2ray.client.ui.theme.Steel
-import com.aiv2ray.client.ui.theme.SteelTray
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -106,7 +109,7 @@ private fun AddNodePanel(
     onInput: (String) -> Unit,
     onAdd: () -> Unit
 ) {
-    SteelTray(modifier = Modifier.fillMaxWidth()) {
+    ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -204,7 +207,7 @@ private fun NodeList(
     onSelect: (ServerProfile) -> Unit,
     onRemove: (String) -> Unit
 ) {
-    SteelTray(modifier = Modifier.fillMaxWidth()) {
+    ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -280,27 +283,34 @@ private fun NodeRow(
 
 @Composable
 private fun BottomDials(connecting: Boolean, onTapConnect: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Dial(
-            label = "STATUS", value = if (connecting) "ON" else "OFF", unit = "",
-            accent = if (connecting) Copper.Highlight else Iron.StatusLed,
-            modifier = Modifier.weight(1f)
-        )
-        PowerButton(
-            active = connecting, onTap = onTapConnect,
-            modifier = Modifier.weight(1.3f)
-        )
-        Dial(
-            label = "ENGINE", value = "XRAY", unit = "",
-            accent = Copper.Front,
-            modifier = Modifier.weight(1f)
-        )
+    ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Dial(
+                label = "CONNECTION",
+                value = if (connecting) "ONLINE" else "OFFLINE",
+                needleRatio = if (connecting) 0.72f else 0.05f,
+                accent = if (connecting) Copper.Highlight else Iron.StatusLed,
+                modifier = Modifier.weight(1f)
+            )
+            PowerButton(
+                active = connecting,
+                onTap = onTapConnect,
+                modifier = Modifier.size(78.dp)
+            )
+            Dial(
+                label = "CORE",
+                value = "XRAY",
+                needleRatio = 0.62f,
+                accent = Copper.Front,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -308,85 +318,143 @@ private fun BottomDials(connecting: Boolean, onTapConnect: () -> Unit) {
 private fun Dial(
     label: String,
     value: String,
-    unit: String,
+    needleRatio: Float,
     accent: Color,
     modifier: Modifier
 ) {
+    val animatedRatio by animateFloatAsState(
+        targetValue = needleRatio.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 600),
+        label = "dialNeedle"
+    )
+
     Column(
         modifier = modifier
-            .shadow(6.dp, RoundedCornerShape(14.dp), ambientColor = Steel.Shadow)
-            .background(Brush.verticalGradient(listOf(Steel.Mid, Steel.Base)), RoundedCornerShape(14.dp))
-            .border(1.dp, Steel.High, RoundedCornerShape(14.dp))
-            .padding(10.dp),
+            .padding(horizontal = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Box(modifier = Modifier.size(72.dp), contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val w = size.width
-                val h = size.height
-                val cx = w / 2f
-                val cy = h / 2f
-                val r = (minOf(w, h) / 2f) - 6f
-                drawArc(
-                    color = Steel.High,
-                    startAngle = 135f, sweepAngle = 270f, useCenter = false,
-                    topLeft = Offset(cx - r, cy - r),
-                    size = Size(r * 2, r * 2),
-                    style = Stroke(width = 3f)
-                )
-                drawArc(
-                    color = accent,
-                    startAngle = 135f, sweepAngle = 60f, useCenter = false,
-                    topLeft = Offset(cx - r, cy - r),
-                    size = Size(r * 2, r * 2),
-                    style = Stroke(width = 4f)
-                )
-                drawLine(
-                    color = accent,
-                    start = Offset(cx, cy),
-                    end = Offset(
-                        cx + r * cos(Math.toRadians(195.0)).toFloat(),
-                        cy + r * sin(Math.toRadians(195.0)).toFloat()
+        Box(
+            modifier = Modifier
+                .size(84.dp)
+                .shadow(8.dp, CircleShape, ambientColor = Steel.Shadow)
+                .background(
+                    Brush.radialGradient(
+                        listOf(Color(0xFF484E56), Color(0xFF1B1E22), Color(0xFF101214))
                     ),
-                    strokeWidth = 3f
+                    CircleShape
                 )
+                .border(
+                    2.dp,
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF7E8793), Color(0xFF383D44), Color(0xFF101215))
+                    ),
+                    CircleShape
+                )
+                .padding(6.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val radius = (size.minDimension / 2f) - 2f
+                for (tick in 0..28) {
+                    val angle = Math.toRadians(135.0 + tick * 270.0 / 28)
+                    val isMajor = tick % 4 == 0
+                    val innerRadius = radius - if (isMajor) 7f else 4f
+                    drawLine(
+                        color = if (isMajor) Color(0xFFD6C29E) else Color(0xFF6E747C),
+                        start = Offset(
+                            center.x + innerRadius * cos(angle).toFloat(),
+                            center.y + innerRadius * sin(angle).toFloat()
+                        ),
+                        end = Offset(
+                            center.x + radius * cos(angle).toFloat(),
+                            center.y + radius * sin(angle).toFloat()
+                        ),
+                        strokeWidth = if (isMajor) 1.5f else 1f
+                    )
+                }
+
+                val needleAngle = Math.toRadians(135.0 + animatedRatio * 270.0)
+                val needleTip = Offset(
+                    center.x + (radius - 8f) * cos(needleAngle).toFloat(),
+                    center.y + (radius - 8f) * sin(needleAngle).toFloat()
+                )
+                drawArc(
+                    color = Color(0xFF151719),
+                    startAngle = 135f,
+                    sweepAngle = 270f,
+                    useCenter = false,
+                    topLeft = Offset(center.x - radius + 2f, center.y - radius + 2f),
+                    size = Size((radius - 2f) * 2f, (radius - 2f) * 2f),
+                    style = Stroke(width = 2f)
+                )
+                drawLine(accent, center, needleTip, strokeWidth = 2.5f)
+                drawCircle(Color(0xFF0F1113), radius = 5f, center = center)
+                drawCircle(Color(0xFFB56534), radius = 3.5f, center = center)
+                drawCircle(Color(0xFFFFD199), radius = 1.5f, center = center)
             }
         }
         Text(
-            text = label, color = Iron.EngraveLight, fontSize = 9.sp,
-            letterSpacing = 1.5.sp, fontWeight = FontWeight.SemiBold
+            text = value,
+            color = Copper.Highlight,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
         )
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                value, color = Copper.Highlight,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp, fontWeight = FontWeight.Bold
-            )
-            if (unit.isNotBlank()) {
-                Spacer(Modifier.width(4.dp))
-                Text(unit, color = Copper.Highlight, fontSize = 9.sp)
-            }
-        }
+        Text(
+            text = label,
+            color = Iron.EngraveLight,
+            fontSize = 8.sp,
+            letterSpacing = 0.7.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
+        )
     }
 }
 
 @Composable
 private fun PowerButton(active: Boolean, onTap: () -> Unit, modifier: Modifier) {
-    val glow = if (active) Copper.Glow.copy(alpha = 0.35f) else Color.Transparent
+    val halo = if (active) Copper.Glow.copy(alpha = 0.6f) else Color.Transparent
     Box(
         modifier = modifier
-            .height(120.dp)
-            .shadow(12.dp, CircleShape, ambientColor = glow, spotColor = glow)
-            .background(Brush.radialGradient(listOf(Steel.Mid, Steel.Shadow)), CircleShape)
-            .border(2.dp, if (active) Copper.Highlight else Copper.Front, CircleShape)
-            .clickable { onTap() },
+            .shadow(14.dp, CircleShape, ambientColor = halo, spotColor = halo)
+            .background(
+                Brush.radialGradient(
+                    listOf(Color(0xFF5A616A), Color(0xFF282C31), Color(0xFF111316))
+                ),
+                CircleShape
+            )
+            .border(
+                2.5.dp,
+                if (active) Brush.radialGradient(listOf(Color(0xFFFFB673), Color(0xFFB85926)))
+                else Brush.verticalGradient(listOf(Color(0xFF6F7782), Color(0xFF1E2125))),
+                CircleShape
+            )
+            .padding(7.dp)
+            .clickable(role = Role.Button, onClick = onTap),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            Icons.Default.Bolt, contentDescription = "Connect",
-            tint = if (active) Copper.Highlight else Copper.Front,
-            modifier = Modifier.size(38.dp)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.radialGradient(listOf(Color(0xFF353A41), Color(0xFF121417))),
+                    CircleShape
+                )
+                .border(
+                    1.5.dp,
+                    if (active) Color(0xFFFF9D47) else Color(0xFF4C535C),
+                    CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.PowerSettingsNew,
+                contentDescription = if (active) "Disconnect VPN" else "Connect VPN",
+                tint = if (active) Color(0xFFFFB878) else Color(0xFF888F99),
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 }

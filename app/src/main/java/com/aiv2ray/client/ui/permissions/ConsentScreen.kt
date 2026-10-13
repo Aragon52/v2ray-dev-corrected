@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.aiv2ray.client.ui.theme.Copper
 import com.aiv2ray.client.ui.theme.Iron
 import com.aiv2ray.client.ui.theme.KeyCapButton
+import com.aiv2ray.client.ui.theme.ScrewedSteelPlate
 import com.aiv2ray.client.ui.theme.Steel
-import com.aiv2ray.client.ui.theme.SteelTray
 
 /**
  * In-app prominent disclosure required by Google Play VpnService policy.
@@ -121,7 +121,7 @@ fun ConsentScreen(onAccept: () -> Unit) {
                     )
                 }
 
-                SteelTray(modifier = Modifier.fillMaxWidth()) {
+                ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             text = "What this app does",
@@ -136,7 +136,7 @@ fun ConsentScreen(onAccept: () -> Unit) {
                     }
                 }
 
-                SteelTray(modifier = Modifier.fillMaxWidth()) {
+                ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             text = "Data this app does NOT collect",
@@ -157,7 +157,7 @@ fun ConsentScreen(onAccept: () -> Unit) {
                     }
                 }
 
-                SteelTray(modifier = Modifier.fillMaxWidth()) {
+                ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             text = "Data the app DOES handle",
@@ -174,7 +174,7 @@ fun ConsentScreen(onAccept: () -> Unit) {
                     }
                 }
 
-                SteelTray(modifier = Modifier.fillMaxWidth()) {
+                ScrewedSteelPlate(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             text = "Important",
