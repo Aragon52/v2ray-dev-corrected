@@ -21,9 +21,9 @@ fun signingValue(key: String, env: String): String? =
 
 val ksPath = signingValue("storeFile", "KEYSTORE_PATH")
 val ksPassword = signingValue("storePassword", "KEYSTORE_PASSWORD")
-val keyAlias = signingValue("keyAlias", "KEY_ALIAS")
-val keyPassword = signingValue("keyPassword", "KEY_PASSWORD")
-val hasSigning = ksPath != null && ksPassword != null && keyAlias != null && keyPassword != null
+val releaseKeyAlias = signingValue("keyAlias", "KEY_ALIAS")
+val releaseKeyPassword = signingValue("keyPassword", "KEY_PASSWORD")
+val hasSigning = ksPath != null && ksPassword != null && releaseKeyAlias != null && releaseKeyPassword != null
 
 android {
     namespace = "com.aiv2ray.client"
@@ -45,8 +45,8 @@ android {
             create("release") {
                 storeFile = file(ksPath!!)
                 storePassword = ksPassword
-                this.keyAlias = keyAlias
-                this.keyPassword = keyPassword
+                this.keyAlias = releaseKeyAlias
+                this.keyPassword = releaseKeyPassword
             }
         }
     }
