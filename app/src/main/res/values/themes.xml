@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AiV2RayClient" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/steel_shadow</item>
+        <item name="android:navigationBarColor">@color/steel_shadow</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/steel_base</item>
+    </style>
+</resources>

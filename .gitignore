@@ -1,0 +1,26 @@
+# Gradle / Android
+.gradle/
+build/
+app/build/
+captures/
+local.properties
+*.iml
+.idea/
+.DS_Store
+
+# Keystores — NEVER commit
+*.jks
+*.keystore
+*.p12
+keystore.properties
+
+# Native build output
+.externalNativeBuild/
+.cxx/
+
+# APK/AAB artifacts (produced by CI, not checked in)
+*.apk
+*.aab
+
+# Logs
+*.log

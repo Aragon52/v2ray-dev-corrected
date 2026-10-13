@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="steel_base">#FF2C3035</color>
+    <color name="steel_shadow">#FF0E1013</color>
+    <color name="copper_front">#FFC87547</color>
+    <color name="copper_highlight">#FFE8C99A</color>
+    <color name="iron_engrave">#FF9AA1A8</color>
+    <color name="iron_led">#FFE53935</color>
+</resources>

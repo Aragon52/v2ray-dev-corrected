@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ai V2Ray Client</string>
+    <string name="short_desc">A precision VPN client for VLESS / VMess / Trojan / Shadowsocks.</string>
+    <string name="notification_tunnel_active">Tunnel active</string>
+</resources>
