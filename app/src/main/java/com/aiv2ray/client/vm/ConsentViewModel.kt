@@ -18,7 +18,7 @@ class ConsentViewModel(app: Application) : AndroidViewModel(app) {
 
     fun accept() {
         viewModelScope.launch {
-            app.consentStore.edit { it[key] = true }
+            getApplication<Application>().consentStore.edit { it[key] = true }
         }
     }
 }
